@@ -5,7 +5,8 @@
 # https://hub.docker.com/_/ubuntu/tags?page=1&name=jammy
 ARG ROOT_CONTAINER=ubuntu:22.04
 
-FROM $ROOT_CONTAINER
+#FROM $ROOT_CONTAINER
+FROM nvidia/cuda:11.4.1-cudnn8-devel-ubuntu20.04
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 ARG NB_USER="jovyan"
@@ -121,6 +122,7 @@ RUN set -x && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
+
 
 # Configure container startup
 ENTRYPOINT ["tini", "-g", "--"]

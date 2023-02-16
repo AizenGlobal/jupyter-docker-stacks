@@ -2,7 +2,8 @@
 # Distributed under the terms of the Modified BSD License.
 ARG OWNER=jupyter
 ARG BASE_CONTAINER=$OWNER/docker-stacks-foundation
-FROM $BASE_CONTAINER
+#FROM $BASE_CONTAINER
+FROM docker-stack-foundation
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 
@@ -60,6 +61,12 @@ COPY jupyter_server_config.py /etc/jupyter/
 
 # Fix permissions on /etc/jupyter as root
 USER root
+
+# Install kor language font(fonts-nanum), and apply it to matplotlib.
+ARG PYTHON_VERSION=3.10
+RUN pip install matplotlib
+RUN apt-get update && apt-get install -y fonts-nanum*
+RUN cp /usr/share/fonts/truetype/nanum/Nanum* "${CONDA_DIR}/lib/python${PYTHON_VERSION}/site-packages/matplotlib/mpl-data/fonts/ttf/"
 
 # Legacy for Jupyter Notebook Server, see: [#1205](https://github.com/jupyter/docker-stacks/issues/1205)
 RUN sed -re "s/c.ServerApp/c.NotebookApp/g" \
